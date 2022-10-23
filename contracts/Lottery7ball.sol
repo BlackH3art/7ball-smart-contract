@@ -16,6 +16,12 @@ contract Lottery7ball is VRFConsumerBaseV2 {
   address[] winners4ball;
   address[] winners3ball;
 
+  uint256 prize7matched;
+  uint256 prize6matched;
+  uint256 prize5matched;
+  uint256 prize4matched;
+  uint256 prize3matched;
+
   mapping(address => uint256) public addressToRewardBalance;
 
   // ===================================================
@@ -44,6 +50,10 @@ contract Lottery7ball is VRFConsumerBaseV2 {
 
     rangeArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42];
 
+    prize6matched = 1000000000000000000; // 1.00 ether
+    prize5matched = 100000000000000000; // 0.10 ether
+    prize4matched = 50000000000000000; // 0.05 ether
+    prize3matched = 12000000000000000; // 0.012 ether
   }
 
 
@@ -74,13 +84,13 @@ contract Lottery7ball is VRFConsumerBaseV2 {
 
   function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomNumbers) internal override {
 
-    addDrawnNumberToArray(randomNumbers[0] % rangeArray.length);
-    addDrawnNumberToArray(randomNumbers[1] % rangeArray.length);
-    addDrawnNumberToArray(randomNumbers[2] % rangeArray.length);
-    addDrawnNumberToArray(randomNumbers[3] % rangeArray.length);
-    addDrawnNumberToArray(randomNumbers[4] % rangeArray.length);
-    addDrawnNumberToArray(randomNumbers[5] % rangeArray.length);
-    addDrawnNumberToArray(randomNumbers[6] % rangeArray.length);
+    addNumberToDrawnNumbersArray(_randomNumbers[0] % rangeArray.length);
+    addNumberToDrawnNumbersArray(_randomNumbers[1] % rangeArray.length);
+    addNumberToDrawnNumbersArray(_randomNumbers[2] % rangeArray.length);
+    addNumberToDrawnNumbersArray(_randomNumbers[3] % rangeArray.length);
+    addNumberToDrawnNumbersArray(_randomNumbers[4] % rangeArray.length);
+    addNumberToDrawnNumbersArray(_randomNumbers[5] % rangeArray.length);
+    addNumberToDrawnNumbersArray(_randomNumbers[6] % rangeArray.length);
   }
 
 
@@ -93,7 +103,7 @@ contract Lottery7ball is VRFConsumerBaseV2 {
   //               UTILS / HELPERS
   // ===================================================
 
-  function addDrawnNumberToArray(uint256 number) internal {
+  function addNumberToDrawnNumbersArray(uint256 number) internal {
     drawnNumbersArray.push(rangeArray[number]);
 
     delete rangeArray[number];
