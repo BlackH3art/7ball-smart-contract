@@ -10,6 +10,14 @@ contract Lottery7ball is VRFConsumerBaseV2 {
   uint8[] rangeArray;
   uint8[] drawnNumbersArray;
 
+  address[] winners7ball;
+  address[] winners6ball;
+  address[] winners5ball;
+  address[] winners4ball;
+  address[] winners3ball;
+
+  mapping(address => uint256) public addressToRewardBalance;
+
   // ===================================================
   //                  CHAINLINK CONFIGURATION
   // ===================================================
@@ -92,6 +100,39 @@ contract Lottery7ball is VRFConsumerBaseV2 {
 
     for(uint256 i = number; i < rangeArray.length - 1; i++) {
       rangeArray[i] = rangeArray[i + 1];
+    }
+  }
+
+
+  function pushWinnersToArrays() internal {
+
+    for(uint32 i = 0; i < ticketsArray.length; i++) {
+      uint8 matching = 0;
+
+      for(uint8 j = 0; j < ticketsArray[i].length; j++) {
+
+        for(uint8 k = 0; k < winningArray.length; k++) {
+          if(winningArray[k] == ticketsArray[i][j]) {
+            matching = matching + 1;
+          }
+        }
+      }
+
+      if(matching == 7) {
+        winners7ball.push(ticketOwnersArray[i]);
+
+      } else if(matching == 6) {
+        winners6ball.push(ticketOwnersArray[i]);
+
+      } else if(matching == 5) {
+        winners5ball.push(ticketOwnersArray[i]);
+
+      } else if(matching == 4) {
+        winners4ball.push(ticketOwnersArray[i]);
+        
+      } else if(matching == 3) { 
+        winners3ball.push(ticketOwnersArray[i]);
+      }
     }
   }
 
