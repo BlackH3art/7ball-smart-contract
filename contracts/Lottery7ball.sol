@@ -25,6 +25,9 @@ contract Lottery7ball is VRFConsumerBaseV2 {
   uint256 prize4matched;
   uint256 prize3matched;
 
+  uint256 public prizePool;
+
+
   mapping(address => uint256) public addressToRewardBalance;
 
   // ===================================================
@@ -62,7 +65,6 @@ contract Lottery7ball is VRFConsumerBaseV2 {
 
 
 
-
   // ===================================================
   //                  AUTOMATION INTERFACE
   // ===================================================
@@ -94,10 +96,11 @@ contract Lottery7ball is VRFConsumerBaseV2 {
     addNumberToDrawnNumbersArray(_randomNumbers[4] % rangeArray.length);
     addNumberToDrawnNumbersArray(_randomNumbers[5] % rangeArray.length);
     addNumberToDrawnNumbersArray(_randomNumbers[6] % rangeArray.length);
+
+    pushWinnersToArrays();
+    assignPrizesToWinnersBalances();
+
   }
-
-
-
 
 
 
@@ -148,5 +151,60 @@ contract Lottery7ball is VRFConsumerBaseV2 {
       }
     }
   }
+
+
+  function assignPrizesToWinnersBalances() internal {
+
+    /*
+      This function is called to assign prize to each winner.
+      Prizes for up to 6 matched numbers are fixed that is why they are determined first.
+      Main prize for 7 matched numbers is always prizePool, so to make sure that all winners
+      will get their prize, it is calculated at the end, and has to be split between all
+      who matched 7 numbers evenly.
+    */
+
+    if(winners3ball.length != 0) {
+      for(uint32 i = 0; i < winners3ball.length; i++) {
+        addressToRewardBalance[winners3ball[i]] += prize3matched;
+      }
+      prizePool = prizePool - (winners3ball.length * prize3matched);
+    }
+
+
+    if(winners4ball.length != 0) {
+      for(uint32 i = 0; i < winners4ball.length; i++) {
+        addressToRewardBalance[winners4ball[i]] += prize4matched;
+      }
+      prizePool = prizePool - (winners4ball.length * prize4matched);
+    }
+
+
+    if(winners5ball.length != 0) {
+      for(uint32 i = 0; i < winners5ball.length; i++) {
+        addressToRewardBalance[winners5ball[i]] += prize5matched;
+      }
+      prizePool = prizePool - (winners5ball.length * prize5matched);
+    }
+
+
+    if(winners6ball.length != 0) {
+      for(uint32 i = 0; i < winners6ball.length; i++) {
+        addressToRewardBalance[winners6ball[i]] += prize6matched;
+      }
+      prizePool = prizePool - (winners6ball.length * prize6matched);
+    }
+
+
+    if(winners7ball.length != 0) {
+      prize7matched = prizePool / winners7ball.length;
+
+      for(uint32 i = 0; i < winners7ball.length; i++) {
+        addressToRewardBalance[winners7ball[i]] += prize7matched;
+      }
+      prizePool = prizePool - (winners7ball.length * prize7matched);
+    }
+  }
+
+
 
 }
