@@ -10,6 +10,9 @@ contract Lottery7ball is VRFConsumerBaseV2 {
   uint8[] rangeArray;
   uint8[] drawnNumbersArray;
 
+  uint8[7][] public ticketsArray;
+  address[] public ticketOwnersArray;
+
   address[] winners7ball;
   address[] winners6ball;
   address[] winners5ball;
@@ -121,8 +124,8 @@ contract Lottery7ball is VRFConsumerBaseV2 {
 
       for(uint8 j = 0; j < ticketsArray[i].length; j++) {
 
-        for(uint8 k = 0; k < winningArray.length; k++) {
-          if(winningArray[k] == ticketsArray[i][j]) {
+        for(uint8 k = 0; k < drawnNumbersArray.length; k++) {
+          if(drawnNumbersArray[k] == ticketsArray[i][j]) {
             matching = matching + 1;
           }
         }
