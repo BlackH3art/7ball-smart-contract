@@ -106,6 +106,21 @@ contract Lottery7ball is VRFConsumerBaseV2 {
 
 
   // ===================================================
+  //               PUBLIC INTERFACE
+  // ===================================================
+
+  function claimReward() public {
+    require(address(this).balance >= addressToRewardBalance[msg.sender], "Insufficient funds in contract");
+
+    uint256 rewardBalance = addressToRewardBalance[msg.sender];
+    addressToRewardBalance[msg.sender] = 0;
+    payable(msg.sender).transfer(rewardBalance);
+  }
+
+
+
+
+  // ===================================================
   //               UTILS / HELPERS
   // ===================================================
 
