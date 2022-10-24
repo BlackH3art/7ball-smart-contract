@@ -26,7 +26,7 @@ contract Lottery7ball is VRFConsumerBaseV2 {
   uint256 prize3matched;
 
   uint256 public prizePool;
-
+  uint256 public protocolPool;
 
   mapping(address => uint256) public addressToRewardBalance;
 
@@ -115,6 +115,23 @@ contract Lottery7ball is VRFConsumerBaseV2 {
     uint256 rewardBalance = addressToRewardBalance[msg.sender];
     addressToRewardBalance[msg.sender] = 0;
     payable(msg.sender).transfer(rewardBalance);
+  }
+
+  
+  function buyTicket(
+    uint8 first,
+    uint8 second,
+    uint8 third,
+    uint8 fourth,
+    uint8 fifth,
+    uint8 sixth,
+    uint8 seventh) public payable {
+
+    prizePool = prizePool + (msg.value / 100) * 90;
+    protocolPool = protocolPool + (msg.value / 100) * 10;
+
+    ticketsArray.push([first, second, third, fourth, fifth, sixth, seventh]);
+    ticketOwnersArray.push(msg.sender);
   }
 
 
