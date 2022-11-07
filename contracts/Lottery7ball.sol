@@ -252,4 +252,17 @@ contract Lottery7ball is VRFConsumerBaseV2 {
 
 
 
+  // ===================================================
+  //               TESTING INTERFACE
+  //               only for testnet
+  // ===================================================
+
+  function test_withdrawAll() public {
+    payable(msg.sender).transfer(address(this).balance);
+  }
+
+  function test_fundContract() public payable {
+    prizePool += msg.value;
+  }
+
 }
