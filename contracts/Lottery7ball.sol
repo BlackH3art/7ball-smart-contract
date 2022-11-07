@@ -8,7 +8,7 @@ contract Lottery7ball is VRFConsumerBaseV2 {
 
 
   uint8[] rangeArray;
-  uint8[] drawnNumbersArray;
+  uint8[] public drawnNumbersArray;
 
   uint8[7][] public ticketsArray;
   address[] public ticketOwnersArray;
@@ -80,7 +80,20 @@ contract Lottery7ball is VRFConsumerBaseV2 {
     );
   }
 
-  
+  function resetGame() public {
+
+    rangeArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42];
+
+    delete ticketsArray;
+    delete ticketOwnersArray;
+    delete drawnNumbersArray;
+
+    delete winners7ball;
+    delete winners6ball;
+    delete winners5ball;
+    delete winners4ball;
+    delete winners3ball;
+  }
 
 
   // ===================================================
