@@ -3,8 +3,9 @@ pragma solidity ^0.8.10;
 
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Lottery7ball is VRFConsumerBaseV2 {
+contract Lottery7ball is VRFConsumerBaseV2, Ownable {
 
 
   uint8[] rangeArray;
@@ -257,11 +258,11 @@ contract Lottery7ball is VRFConsumerBaseV2 {
   //               only for testnet
   // ===================================================
 
-  function test_withdrawAll() public {
+  function test_withdrawAll() public onlyOwner {
     payable(msg.sender).transfer(address(this).balance);
   }
 
-  function test_fundContract() public payable {
+  function test_fundContract() public payable onlyOwner {
     prizePool += msg.value;
   }
 
