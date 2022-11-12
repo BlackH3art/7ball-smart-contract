@@ -26,6 +26,8 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
   uint256 prize4matched;
   uint256 prize3matched;
 
+  uint256 ticketPrice;
+
   uint256 public prizePool;
   uint256 public protocolPool;
 
@@ -61,6 +63,8 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
     prize5matched = 100000000000000000; // 0.10 ether
     prize4matched = 50000000000000000; // 0.05 ether
     prize3matched = 12000000000000000; // 0.012 ether
+
+    ticketPrice = 1 ether;
   }
 
 
@@ -139,7 +143,7 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
     uint8 fourth,
     uint8 fifth,
     uint8 sixth,
-    uint8 seventh) public payable {
+    uint8 seventh) public payable payThePrice {
 
     prizePool = prizePool + (msg.value / 100) * 90;
     protocolPool = protocolPool + (msg.value / 100) * 10;
@@ -268,6 +272,19 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
       prizePool = prizePool - (winners7ball.length * prize7matched);
     }
   }
+
+
+
+
+  // ===================================================
+  //                  MODIFIERS
+  // ===================================================
+
+  modifier payThePrice() {
+    require(msg.value >= ticketPrice, "Insufficient transfer");
+    _;
+  }
+
 
 
 
