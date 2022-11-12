@@ -152,6 +152,24 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
 
 
   // ===================================================
+  //               ADMIN INTERFACE
+  // ===================================================
+
+  function adminWithdrawProtocolPool(address payable withdrawTo, uint256 amount) public onlyOwner {
+    require(amount <= protocolPool, "Cannot withdraw more than protocolPool");
+
+    protocolPool = protocolPool - amount;
+    withdrawTo.transfer(amount);
+  }
+
+  function adminFundContract() public payable onlyOwner {
+    prizePool += msg.value;
+    protocolPool += msg.value;
+  }
+
+
+
+  // ===================================================
   //               UTILS / HELPERS
   // ===================================================
 
