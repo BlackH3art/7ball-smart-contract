@@ -30,6 +30,7 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
 
   uint256 public prizePool;
   uint256 public protocolPool;
+  uint256 public adminPool;
 
   mapping(address => uint256) public addressToRewardBalance;
 
@@ -166,9 +167,17 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
     withdrawTo.transfer(amount);
   }
 
+  function adminWithdrawAdminPool(address payable withdrawTo, uint256 amount) public onlyOwner {
+    require(amount <= adminPool, "Cannot withdraw more than adminPool");
+
+    adminPool = adminPool - amount;
+    prizePool = prizePool - amount;
+    withdrawTo.transfer(amount);
+  }
+
   function adminFundContract() public payable onlyOwner {
     prizePool += msg.value;
-    protocolPool += msg.value;
+    adminPool += msg.value;
   }
 
 
