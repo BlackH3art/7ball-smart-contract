@@ -3,9 +3,10 @@ pragma solidity ^0.8.10;
 
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Lottery7ball is VRFConsumerBaseV2, Ownable {
+contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
 
 
   uint8[] rangeArray;
@@ -31,6 +32,10 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
   uint256 public prizePool;
   uint256 public protocolPool;
   uint256 public adminPool;
+
+  uint256 lastTimeStamp;
+  uint256 interval;
+  bool gameIsOn;
 
   mapping(address => uint256) public addressToRewardBalance;
 
@@ -66,6 +71,10 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
     prize3matched = 12000000000000000; // 0.012 ether
 
     ticketPrice = 1 ether;
+
+    lastTimeStamp = block.timestamp;
+    interval = 1 hours;
+    gameIsOn = true;
   }
 
 
@@ -75,7 +84,32 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
   //                  AUTOMATION INTERFACE
   // ===================================================
 
-  function startLottery() public {
+  function checkUpkeep(bytes calldata /* checkData */) external view override returns (bool upkeepNeeded, bytes memory /* performData */) {
+    upkeepNeeded = (block.timestamp - lastTimeStamp) > interval;
+  }
+
+  function performUpkeep(bytes calldata /* performData */) external override {
+
+    if ((block.timestamp - lastTimeStamp) > interval ) {
+
+      if(gameIsOn) {
+        lastTimeStamp = block.timestamp;
+        startLottery();
+
+        interval = 20 minutes;
+        gameIsOn = false;
+
+      } else {
+        lastTimeStamp = block.timestamp;
+        resetGame();
+
+        interval = 1 hours;
+        gameIsOn = true;
+      }
+    }
+  }
+
+  function startLottery() internal {
 
     requestId = COORDINATOR.requestRandomWords(
       keyHash,
@@ -86,7 +120,7 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable {
     );
   }
 
-  function resetGame() public {
+  function resetGame() internal {
 
     rangeArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42];
 
