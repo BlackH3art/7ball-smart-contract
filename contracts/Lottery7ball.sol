@@ -330,7 +330,7 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
 
   modifier lotteryIsOn() {
     require(gameIsOn == true, "Lottery has not started yet");
-    _
+    _;
   }
 
 
