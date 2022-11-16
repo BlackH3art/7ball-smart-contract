@@ -33,9 +33,9 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
   uint256 public protocolPool;
   uint256 public adminPool;
 
-  uint256 lastTimeStamp;
-  uint256 interval;
-  bool gameIsOn;
+  uint256 public lastTimeStamp;
+  uint256 public interval;
+  bool public gameIsOn;
 
   mapping(address => uint256) public addressToRewardBalance;
 
@@ -178,7 +178,7 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
     uint8 fourth,
     uint8 fifth,
     uint8 sixth,
-    uint8 seventh) public payable payThePrice {
+    uint8 seventh) public payable payThePrice lotteryIsOn {
 
     prizePool = prizePool + (msg.value / 100) * 90;
     protocolPool = protocolPool + (msg.value / 100) * 10;
@@ -326,6 +326,11 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
   modifier payThePrice() {
     require(msg.value >= ticketPrice, "Insufficient transfer");
     _;
+  }
+
+  modifier lotteryIsOn() {
+    require(gameIsOn == true, "Lottery has not started yet");
+    _
   }
 
 
