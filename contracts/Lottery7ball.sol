@@ -44,6 +44,7 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
   event UpdatedPrizePool();
   event UpdatedBalances();
   event GameIsOn(bool isGameOn);
+  event GameReset();
 
   // ===================================================
   //                  CHAINLINK CONFIGURATION
@@ -146,7 +147,7 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
     delete winners4ball;
     delete winners3ball;
 
-    emit UpdatedNumbersDrawn();
+    emit GameReset();
   }
 
 
