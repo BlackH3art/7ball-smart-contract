@@ -39,6 +39,12 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
 
   mapping(address => uint256) public addressToRewardBalance;
 
+  event UpdatedNumbersDrawn();
+  event UpdatedInterval(uint256 indexed interval);
+  event UpdatedPrizePool();
+  event UpdatedBalances();
+  event GameIsOn(bool isGameOn);
+
   // ===================================================
   //                  CHAINLINK CONFIGURATION
   // ===================================================
@@ -99,12 +105,18 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
         interval = 20 minutes;
         gameIsOn = false;
 
+        emit GameIsOn(gameIsOn);
+        emit UpdatedInterval(interval);
+
       } else {
         lastTimeStamp = block.timestamp;
         resetGame();
 
         interval = 1 hours;
         gameIsOn = true;
+
+        emit GameIsOn(gameIsOn);
+        emit UpdatedInterval(interval);
       }
     }
   }
@@ -133,6 +145,8 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
     delete winners5ball;
     delete winners4ball;
     delete winners3ball;
+
+    emit UpdatedNumbersDrawn();
   }
 
 
@@ -153,6 +167,7 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
     pushWinnersToArrays();
     assignPrizesToWinnersBalances();
 
+    emit UpdatedNumbersDrawn();
   }
 
 
@@ -185,6 +200,8 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
 
     ticketsArray.push([first, second, third, fourth, fifth, sixth, seventh]);
     ticketOwnersArray.push(msg.sender);
+
+    emit UpdatedPrizePool();
   }
 
 
@@ -207,11 +224,15 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
     adminPool = adminPool - amount;
     prizePool = prizePool - amount;
     withdrawTo.transfer(amount);
+
+    emit UpdatedPrizePool();
   }
 
   function adminFundContract() public payable onlyOwner {
     prizePool += msg.value;
     adminPool += msg.value;
+
+    emit UpdatedPrizePool();
   }
 
 
@@ -314,6 +335,8 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
       }
       prizePool = prizePool - (winners7ball.length * prize7matched);
     }
+
+    emit UpdatedBalances();
   }
 
 
@@ -347,6 +370,8 @@ contract Lottery7ball is VRFConsumerBaseV2, Ownable, AutomationCompatible {
 
   function test_fundContract() public payable onlyOwner {
     prizePool += msg.value;
+    
+    emit UpdatedPrizePool();
   }
 
 }
